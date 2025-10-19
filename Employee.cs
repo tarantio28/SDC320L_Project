@@ -1,17 +1,17 @@
 // Clint A. Hester
-// 10/12/2025
-// Assignment: SDC320L Project 1.5
+// 10/19/2025
+// Assignment: SDC320L Project 2.2
 // Purpose: Base class for all employees. Demonstrates composition.
 
 using System;
 
-public class Employee
+public class Employee : IActionable
 {
     public string EmployeeName { get; set; }
     public int EmployeeId { get; set; }
     
     // Composition: Employee "has a" Pay object.
-    private Pay employeePay;
+    protected Pay employeePay;
 
     // Constructor
     public Employee(string name, int id, double payRate)
@@ -32,5 +32,15 @@ public class Employee
     public override string ToString()
     {
         return GetEmployeeInfo();
+    }
+
+    public virtual string GetTask()
+    {
+        return "Handling general employee duties.";
+    }
+
+    public virtual string GetStatus()
+    {
+        return "Active";
     }
 }
