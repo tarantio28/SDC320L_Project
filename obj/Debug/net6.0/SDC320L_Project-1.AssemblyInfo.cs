@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SDC320L_Project-1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+963f12ae5947f7392d1f13f05ebfb50d9941d407")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+322edf8a8220cce9a6bc5eaa84c50456fdb91cf4")]
 [assembly: System.Reflection.AssemblyProductAttribute("SDC320L_Project-1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SDC320L_Project-1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

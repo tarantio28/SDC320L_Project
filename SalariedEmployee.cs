@@ -1,27 +1,33 @@
 // Clint A. Hester
-// 10/12/2025
-// Assignment: SDC320L Project 1.5
-// Purpose: Represents an employee paid a salary. Demonstrates inheritance.
+// 10/26/2025
+// Assignment: SDC320L Project Week 3
+// Purpose: Salaried employee; overrides abstract methods.
 
 using System;
 
-// Inheritance: SalariedEmployee "is an" Employee.
 public class SalariedEmployee : Employee
 {
-    public double WeeklyBonus { get; set; }
+    // Weekly bonus should not be freely writable from outside; keep setter protected.
+    public double WeeklyBonus { get; protected set; }
 
-    // Constructor
-    public SalariedEmployee(string name, int id, double annualRate, double bonus) 
-        : base(name, id, annualRate) // Call the parent class constructor.
+    // Constructors
+    public SalariedEmployee() : this("Unknown", 0, 0.0, 0.0) { }
+
+    public SalariedEmployee(string name, int id, double annualRate, double weeklyBonus)
+        : base(name, id, annualRate)
     {
-        WeeklyBonus = bonus;
+        WeeklyBonus = weeklyBonus;
     }
 
-    // Override the base method to add bonus information.
-    public override string GetEmployeeInfo()
-    {
-        // Call the base class method and append bonus info.
-        return string.Format("{0}\nWeekly Bonus: {1:C}", 
-            base.GetEmployeeInfo(), WeeklyBonus);
-    }
+    // ABSTRACTION: specific pay rule for salaried
+    public override double CalculateWeeklyPay()
+        => (employeePay?.PayRate ?? 0.0) / 52.0 + WeeklyBonus;
+
+    // Detailed info for UI/report
+    public override string ToString()
+        => $"{GetHeaderInfo()}\nType: Salaried\nWeekly Bonus: {WeeklyBonus:C}\nWeekly Pay: {CalculateWeeklyPay():C}";
+
+    // IActionable
+    public override string GetTask()   => "Leading initiatives and completing salaried assignments.";
+    public override string GetStatus() => "Active (Salaried)";
 }

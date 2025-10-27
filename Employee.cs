@@ -1,46 +1,59 @@
 // Clint A. Hester
-// 10/19/2025
-// Assignment: SDC320L Project 2.2
-// Purpose: Base class for all employees. Demonstrates composition.
+// 10/26/2025
+// Assignment: SDC320L Project Week 3
+// Purpose: Abstract base for all employees; demonstrates abstraction, constructors, access specifiers.
 
 using System;
 
-public class Employee : IActionable
+// ABSTRACTION: An abstract base class captures common identity & pay,
+// and requires derived classes to supply calculation/description details.
+public abstract class Employee : IActionable
 {
-    public string EmployeeName { get; set; }
-    public int EmployeeId { get; set; }
-    
-    // Composition: Employee "has a" Pay object.
+    // Public identity; setters restricted so only constructors (or protected helpers) can assign.
+    public string EmployeeName { get; private set; }
+    public int EmployeeId      { get; private set; }
+
+    // Composition: Employee "has a" Pay. Protected so children can read it.
     protected Pay employeePay;
 
-    // Constructor
-    public Employee(string name, int id, double payRate)
+    // ------- Constructors (demonstrates constructor overloading) -------
+    protected Employee()
+    {
+        EmployeeName = "Unknown";
+        EmployeeId   = 0;
+        employeePay  = new Pay();          // Default rate = 0
+    }
+
+    protected Employee(string name, int id)
     {
         EmployeeName = name;
-        EmployeeId = id;
-        employeePay = new Pay(payRate);
+        EmployeeId   = id;
+        employeePay  = new Pay();          // Can be set later by child
     }
 
-    // Virtual method to allow overriding by child classes.
-    public virtual string GetEmployeeInfo()
+    protected Employee(string name, int id, double payRate)
     {
-        return string.Format("Employee Name: {0}\nEmployee ID: {1}\n{2}", 
-            EmployeeName, EmployeeId, employeePay.GetPayInfo());
+        EmployeeName = name;
+        EmployeeId   = id;
+        employeePay  = new Pay(payRate);
     }
 
-    // Override to provide formatted class data.
-    public override string ToString()
-    {
-        return GetEmployeeInfo();
-    }
+    // Copy constructor (useful for cloning/derivations if needed)
+    protected Employee(Employee other)
+        : this(other.EmployeeName, other.EmployeeId, other.employeePay?.PayRate ?? 0.0) { }
 
-    public virtual string GetTask()
-    {
-        return "Handling general employee duties.";
-    }
+    // ------- ABSTRACTION: force derived classes to implement these -------
+    // What the employee does (used for interface polymorphism too)
+    public abstract string GetTask();
+    public abstract string GetStatus();
 
-    public virtual string GetStatus()
-    {
-        return "Active";
-    }
+    // Pay logic is abstract so each employee can define it appropriately.
+    public abstract double CalculateWeeklyPay();
+
+    // Standardized info header; derived classes append role-specific details.
+    public virtual string GetHeaderInfo()
+        => $"Employee Name: {EmployeeName}\nEmployee ID: {EmployeeId}\n{employeePay.GetPayInfo()}";
+
+    // Polymorphic string representation
+    public override string ToString() => GetHeaderInfo();
 }

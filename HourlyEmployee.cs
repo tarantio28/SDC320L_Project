@@ -1,40 +1,32 @@
 // Clint A. Hester
-// 10/19/2025
-// Assignment: SDC320L Project 2.2
-// Purpose: Represents an employee paid by the hour.
+// 10/26/2025
+// Assignment: SDC320L Project Week 3
+// Purpose: Hourly employee; overrides abstract methods.
 
 using System;
 
-// Inheritance: HourlyEmployee "is an" Employee.
 public class HourlyEmployee : Employee
 {
-    public double HoursWorked { get; set; }
+    // Hours are set on creation or by derived classes/this class only.
+    public double HoursWorked { get; protected set; }
 
-    // Constructor
-    public HourlyEmployee(string name, int id, double hourlyRate, double hours) 
+    // Constructors
+    public HourlyEmployee() : this("Unknown", 0, 0.0, 0.0) { }
+
+    public HourlyEmployee(string name, int id, double hourlyRate, double hours)
         : base(name, id, hourlyRate)
     {
         HoursWorked = hours;
     }
 
-    // Override the base method to show hourly info.
-    public override string GetEmployeeInfo()
-    {
-        // Get base info (Name, ID)
-        string baseInfo = string.Format("Employee Name: {0}\nEmployee ID: {1}", EmployeeName, EmployeeId);
-        
-        return string.Format("{0}\nHourly Rate: {1:C}\nHours Worked: {2}", 
-            baseInfo, employeePay.PayRate, HoursWorked);
-    }
-    
-    // Override the interface methods.
-    public override string GetTask()
-    {
-        return "Processing widgets on the line.";
-    }
+    // ABSTRACTION: specific pay rule for hourly
+    public override double CalculateWeeklyPay()
+        => (employeePay?.PayRate ?? 0.0) * HoursWorked;
 
-    public override string GetStatus()
-    {
-        return "Active (Hourly)";
-    }
+    public override string ToString()
+        => $"{GetHeaderInfo()}\nType: Hourly\nHourly Rate: {employeePay.PayRate:C}\nHours Worked: {HoursWorked}\nWeekly Pay: {CalculateWeeklyPay():C}";
+
+    // IActionable
+    public override string GetTask()   => "Processing widgets on the production line.";
+    public override string GetStatus() => "Active (Hourly)";
 }

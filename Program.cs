@@ -1,63 +1,69 @@
 ﻿// Clint A. Hester
-// 10/19/2025
-// Assignment: SDC320L Project 2.2
-// Purpose: Main class to run and test the application.
+// 10/26/2025
+// Assignment: SDC320L Project Week 3
+// Purpose: Console app entry point; demonstrates abstraction, constructors, and access specifiers.
 
 using System;
-using System.Collections.Generic; // Required for using List<>
+using System.Collections.Generic;
 
 class Program
 {
     static void Main(string[] args)
     {
-        // 1. Display Header
-        Console.WriteLine("Project Week 2");
-        Console.WriteLine("Employee Management Application");
-        Console.WriteLine("By: Clint A. Hester");
-        Console.WriteLine("----------------------------------\n");
+        // ----------- Week 3 Header / Indicator -----------
+        Console.WriteLine("==============================================");
+        Console.WriteLine("SDC320L - Project Week 3: Abstraction / Ctors / Access");
+        Console.WriteLine("Author: Clint A. Hester");
+        Console.WriteLine("==============================================\n");
 
-        // 2. Welcome Message
-        Console.WriteLine("Welcome! This application demonstrates Polymorphism and Interfaces.");
-        Console.WriteLine("We will create 3 different employee types and display their info.\n");
+        // ----------- Welcome / Instructions -----------
+        Console.WriteLine("Welcome! This demo shows:");
+        Console.WriteLine("  • Abstraction via an abstract Employee base class");
+        Console.WriteLine("  • Constructor overloading in every class");
+        Console.WriteLine("  • Proper access specifiers (public/protected/private)");
 
-        // 3. Instantiate all classes
-        SalariedEmployee salaried = new SalariedEmployee("Jane Doe", 101, 80000.00, 500.00);
-        HourlyEmployee hourly = new HourlyEmployee("John Smith", 102, 25.50, 40.0);
-        CommissionEmployee commission = new CommissionEmployee("Bob White", 103, 45000.00, 0.15, 50000.00);
+        // ----------- Instantiate using various constructors -----------
+        // Full constructors
+        var salaried   = new SalariedEmployee("John Cortes", 101, 80_000.00, 500.00);
+        var hourly     = new HourlyEmployee("Justyn Cushing", 102, 25.50, 40.0);
+        var commission = new CommissionEmployee("Clint Hester", 103, 45_000.00, 0.15, 50_000.00);
 
-        // 4. DEMONSTRATES: Polymorphism using a base class List.
-        List<Employee> employeeList = new List<Employee>();
-        employeeList.Add(salaried);
-        employeeList.Add(hourly);
-        employeeList.Add(commission);
+        // Default/overloaded constructors (showing constructor overloading in action)
+        var hourlyDefault = new HourlyEmployee(); // uses defaults from base & self
+        var salariedBasic = new SalariedEmployee("Terry Lane", 104, 60_000.00, 250.00);
 
-        Console.WriteLine("----- Displaying Info via Polymorphism (Inheritance) -----");
-        // When we call ToString(), the system polymorphically calls the
-        // correct overridden method from the derived class.
-        foreach (Employee emp in employeeList)
+        // ----------- Polymorphism via abstract base -----------
+        var employees = new List<Employee> { salaried, hourly, commission, hourlyDefault, salariedBasic };
+
+        Console.WriteLine("----- Employee Details (Abstract Base Polymorphism) -----");
+        foreach (var e in employees)
         {
-            Console.WriteLine(emp.ToString());
+            Console.WriteLine(e.ToString());
             Console.WriteLine("-----");
         }
 
-        // 5. DEMONSTRATES: Polymorphism using an interface.
-        Console.WriteLine("\n----- Displaying Info via Polymorphism (Interface) -----");
-        foreach (Employee emp in employeeList)
+        // ----------- Polymorphism via interface -----------
+        Console.WriteLine("\n----- Actions (Interface Polymorphism) -----");
+        foreach (var e in employees)
         {
-            // We pass an 'Employee' object, but the method
-            // accepts an 'IActionable' object.
-            PrintEmployeeAction(emp);
+            PrintEmployeeAction(e); // Method takes IActionable (interface), receives Employee instances
         }
 
-        // Keep the console window open
-        Console.WriteLine("\nPress any key to exit...");
+        // ----------- Abstraction Q&A prompts (on-screen explanations) -----------
+        Console.WriteLine("\n----- How we used Abstraction this week -----");
+        Console.WriteLine("• We introduced an abstract Employee base with abstract methods:");
+        Console.WriteLine("    - CalculateWeeklyPay(), GetTask(), GetStatus()");
+        Console.WriteLine("• Inheriting classes benefit by sharing identity/pay logic while");
+        Console.WriteLine("  supplying their own pay calculations and behaviors.");
+        Console.WriteLine("• The app benefits by allowing uniform handling (lists of Employee),");
+        Console.WriteLine("  easier extension (add new types without changing Program), and safer APIs.\n");
+
+        Console.WriteLine("Press any key to exit...");
         Console.ReadKey();
     }
 
-    // This method accepts any object that implements the IActionable interface.
-    // This is polymorphism via interface.
-    private static void PrintEmployeeAction(IActionable employee)
-    {
-        Console.WriteLine($"Task: {employee.GetTask()} | Status: {employee.GetStatus()}");
-    }
+    // Accepts any IActionable object — demonstrates interface-based polymorphism.
+    private static void PrintEmployeeAction(IActionable actionable)
+        => Console.WriteLine($"Task: {actionable.GetTask()} | Status: {actionable.GetStatus()}");
 }
+

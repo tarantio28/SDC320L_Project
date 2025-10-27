@@ -1,11 +1,10 @@
 // Clint A. Hester
-// 10/19/2025
-// Assignment: SDC320L Project 2.2
+// 10/26/2025
+// Assignment: SDC320L Project Week 3
+// Purpose: Interface demonstrating abstraction via contracts for behavior.
 
-// DEMONSTRATES: Creation of an interface.
 public interface IActionable
 {
-    // Any class implementing this interface MUST provide these methods.
     string GetTask();
     string GetStatus();
 }

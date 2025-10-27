@@ -1,24 +1,25 @@
 // Clint A. Hester
-// 10/12/2025
-// Assignment: SDC320L Project 1.5
-// Purpose: Represents pay details for an employee.
+// 10/26/2025
+// Assignment: SDC320L Project Week 3
+// Purpose: Encapsulates pay details; demonstrates access specifiers.
 
 using System;
-using System.Globalization;
 
 public class Pay
 {
-    public double PayRate { get; set; }
+    // Public getter, but only this class and derived employees (via a method) can change it.
+    public double PayRate { get; private set; }
 
-    // Constructor
-    public Pay(double rate)
+    // Overloaded constructors (constructor overloading demo)
+    public Pay() : this(0.0) { }                    // Default
+    public Pay(double rate) { SetRate(rate); }      // Primary
+
+    // Encapsulated mutation with input validation (kept non-public in API surface).
+    public void SetRate(double rate)
     {
+        if (rate < 0) throw new ArgumentOutOfRangeException(nameof(rate), "Pay rate cannot be negative.");
         PayRate = rate;
     }
 
-    // Formats pay rate as currency.
-    public string GetPayInfo()
-    {
-        return string.Format("Annual Pay: {0:C}", PayRate);
-    }
+    public string GetPayInfo() => $"Annual/Base Rate: {PayRate:C}";
 }

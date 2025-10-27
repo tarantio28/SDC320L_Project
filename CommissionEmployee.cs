@@ -1,39 +1,38 @@
 // Clint A. Hester
-// 10/19/2025
-// Assignment: SDC320L Project 2.2
-// Purpose: Represents an employee paid on commission.
+// 10/26/2025
+// Assignment: SDC320L Project Week 3
+// Purpose: Commission-based employee; overrides abstract methods.
 
 using System;
 
-// Inheritance: CommissionEmployee "is an" Employee.
 public class CommissionEmployee : Employee
 {
-    public double CommissionRate { get; set; }
-    public double TotalSales { get; set; }
+    public double CommissionRate { get; protected set; }
+    public double TotalSales     { get; protected set; }
 
-    // Constructor
-    public CommissionEmployee(string name, int id, double baseSalary, double rate, double sales) 
-        : base(name, id, baseSalary)
+    // Constructors
+    public CommissionEmployee() : this("Unknown", 0, 0.0, 0.0, 0.0) { }
+
+    // Note: PayRate here is *annual base* salary to demonstrate composition like Salaried
+    public CommissionEmployee(string name, int id, double baseAnnualSalary, double rate, double sales)
+        : base(name, id, baseAnnualSalary)
     {
         CommissionRate = rate;
-        TotalSales = sales;
+        TotalSales     = sales;
     }
 
-    // Override the base method to show commission info.
-    public override string GetEmployeeInfo()
+    // ABSTRACTION: weekly base + weekly commission
+    public override double CalculateWeeklyPay()
     {
-        return string.Format("{0}\nCommission Rate: {1:P}\nTotal Sales: {2:C}", 
-            base.GetEmployeeInfo(), CommissionRate, TotalSales);
-    }
-    
-    // Override the interface methods.
-    public override string GetTask()
-    {
-        return "Making sales calls.";
+        double weeklyBase       = (employeePay?.PayRate ?? 0.0) / 52.0;
+        double commissionEarned = CommissionRate * TotalSales; // assume weekly period for demo
+        return weeklyBase + commissionEarned;
     }
 
-    public override string GetStatus()
-    {
-        return "Active (Commission)";
-    }
+    public override string ToString()
+        => $"{GetHeaderInfo()}\nType: Commission\nCommission Rate: {CommissionRate:P}\nTotal Sales: {TotalSales:C}\nWeekly Pay: {CalculateWeeklyPay():C}";
+
+    // IActionable
+    public override string GetTask()   => "Making sales calls and closing deals.";
+    public override string GetStatus() => "Active (Commission)";
 }
