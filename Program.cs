@@ -1,7 +1,8 @@
 ﻿// Clint A. Hester
-// 10/26/2025
-// Assignment: SDC320L Project Week 3
-// Purpose: Console app entry point; demonstrates abstraction, constructors, and access specifiers.
+// 11/02/2025
+// Assignment: SDC320L Project Week 4
+// Purpose: Console app entry point; demonstrates abstraction, constructors,
+//          access specifiers, and database CRUD with SQLite.
 
 using System;
 using System.Collections.Generic;
@@ -58,7 +59,71 @@ class Program
         Console.WriteLine("• The app benefits by allowing uniform handling (lists of Employee),");
         Console.WriteLine("  easier extension (add new types without changing Program), and safer APIs.\n");
 
-        Console.WriteLine("Press any key to exit...");
+        // ----------- WEEK 4 ADDITIONS: SQLite Database CRUD Demo -----------
+        Console.WriteLine("\n==============================================");
+        Console.WriteLine("SDC320L - Project Week 4: SQLite CRUD Demo");
+        Console.WriteLine("Author: Clint A. Hester");
+        Console.WriteLine("==============================================");
+        Console.WriteLine("Welcome! This section demonstrates database storage with full CRUD.");
+        Console.WriteLine("Instructions: the app will create/connect a DB, create the table if missing,");
+        Console.WriteLine("then perform Add, Read, Update, Delete with console output.\n");
+
+        // --- Connect & Ensure Table ---
+        const string DbFile = "ClintHester_Employees.db";
+        using var conn = SQLiteDatabase.Connect(DbFile);
+        if (conn == null)
+        {
+            Console.WriteLine("Could not open database.");
+            return;
+        }
+        EmployeeDb.CreateTable(conn);
+
+        // --- Create sample rows (from your existing objects) ---
+        var salariedRec   = new EmployeeRecord(101, "Chris Redfield",      "Salaried",   80000.00, 500.00, 0,     0,    0);
+        var hourlyRec     = new EmployeeRecord(102, "Jill Valentine",    "Hourly",        25.50,   0.00, 40.0,  0,    0);
+        var commissionRec = new EmployeeRecord(103, "Albert Whesker",     "Commission", 45000.00,   0.00, 0,     0.15, 50000.00);
+
+        // CREATE
+        EmployeeDb.AddEmployee(conn, salariedRec);
+        EmployeeDb.AddEmployee(conn, hourlyRec);
+        EmployeeDb.AddEmployee(conn, commissionRec);
+        Console.WriteLine("CREATE: Added 3 employees.");
+
+        // READ (all)
+        Console.WriteLine("\nREAD: All Employees");
+        foreach (var r in EmployeeDb.GetAll(conn))
+        {
+            Console.WriteLine($"#{r.EmployeeId} | {r.Name} | {r.Type} | PayRate: {r.PayRate} | Bonus:{r.WeeklyBonus} | Hours:{r.HoursWorked} | Rate:{r.CommissionRate} | Sales:{r.TotalSales}");
+        }
+
+        // UPDATE (example: rename + tweak fields)
+        var updated = EmployeeDb.GetById(conn, 101);
+        if (updated != null)
+        {
+            updated.Name = "Crystal Dunn (Updated)";
+            updated.WeeklyBonus = 650.00;
+            EmployeeDb.Update(conn, updated);
+            Console.WriteLine("\nUPDATE: Modified #101 (name/bonus).");
+        }
+
+        // READ (single)
+        var readBack = EmployeeDb.GetById(conn, 101);
+        Console.WriteLine("READ (single): " + (readBack != null
+            ? $"#{readBack.EmployeeId} {readBack.Name} Bonus:{readBack.WeeklyBonus}"
+            : "Not found"));
+
+        // DELETE
+        EmployeeDb.Delete(conn, 102);
+        Console.WriteLine("\nDELETE: Removed employee #102 (Hourly).");
+
+        // READ (all) after delete
+        Console.WriteLine("\nREAD: All Employees (Post-Delete)");
+        foreach (var r in EmployeeDb.GetAll(conn))
+        {
+            Console.WriteLine($"#{r.EmployeeId} | {r.Name} | {r.Type}");
+        }
+
+        Console.WriteLine("\nPress any key to exit...");
         Console.ReadKey();
     }
 
@@ -66,4 +131,5 @@ class Program
     private static void PrintEmployeeAction(IActionable actionable)
         => Console.WriteLine($"Task: {actionable.GetTask()} | Status: {actionable.GetStatus()}");
 }
+
 
